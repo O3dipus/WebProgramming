@@ -863,6 +863,7 @@
 
         window.onload=function(){ 
             var card_listing = localStorage.getItem("todolist");
+            if(card_listing==null) return;
             var listing = card_listing.split(",");
             var t=0;
             if(listing.length==1) return;
