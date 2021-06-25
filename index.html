@@ -115,8 +115,8 @@
                 }
             }
 
-            .card.selected{
-                background-color: gray;
+            .card.add{
+                background:linear-gradient(124.72740861105774deg, rgba(50, 230, 188,1) 30.9296875%,rgba(50, 229, 187,1) 30.9296875%,rgba(255, 148, 148,1) 59.78385416666666%)
             }
 
             button{
@@ -210,14 +210,40 @@
                 color:gray;
                 font-size: 2vh;
                 text-shadow: 2px 2px gray;
-                margin: 15px;
                 padding: 15px;
                 text-decoration: none;
+                margin-top: 0;
+                margin-bottom: 0;
+                margin-left: 15px;
+                margin-right: 15px;
                 animation:font-size-change-0-2 1s;
             }
 
             .card-text{
                 user-select:none;  
+            }
+
+            .invalid-input{
+                animation: invalid 1s;
+                animation-timing-function: ease-in-out;
+            }
+
+            @keyframes invalid {
+                0%{
+                    transform:scale(1.2) translateX(-10px);
+                }
+                25%{
+                    transform: scale(0.8) translateX(-8px);
+                }
+                50%{
+                    transform:scale(1.1) translateX(-6px);
+                }
+                75%{
+                    transform:scale(0.9) translateX(-4px);
+                }
+                100%{
+                    transform: scale(1.0);
+                }
             }
 
             @keyframes font-size-change-0-2{
@@ -239,6 +265,11 @@
                 border:1px solid black;
                 width: 75%;
                 padding: 5px;
+            }
+
+            input.timebox{
+                font-size: 3vh;
+                box-shadow: gray 10px 10px;
             }
 
             input.expand{
@@ -347,14 +378,102 @@
                     opacity: 1;
                 }
             }
+
+            .overlay {   
+                position: absolute;   
+                top: 0px;   
+                left: 0px;   
+                z-index: 10001;   
+                height: 100%;
+                width: 100%;
+                filter:alpha(opacity=60);   
+                background-color: #777;   
+                opacity: 0.5;   
+            } 
+
+            .card.overview{
+                position: absolute;
+                z-index: 10002;  
+                padding:0;
+                padding-left:15px;
+                animation:none;
+            }
+
+            .card.overview.mid{
+                top:50vw;
+                left: 30vw;
+                width:40vw;
+                height:40vw;
+                z-index: 10003;  
+                font-size: 4vh;
+                margin: 0;
+                animation: left-to-mid 1s;
+            }
+
+            .card.overview.left{
+                top:55vw;
+                left: 10vw;
+                width:30vw;
+                height:30vw;
+                font-size: 3vh;
+                margin: 0;
+            }
+
+            @keyframes mid-to-right{
+                0%{
+                    top:50vw;
+                    left: 30vw;
+                    width:40vw;
+                    height:40vw;
+                    z-index: 10003;  
+                    font-size: 4vh;
+                    margin: 0;
+                }
+                100%{
+                    top:55vw;
+                    left: 60vw;
+                    width:30vw;
+                    height:30vw;
+                    font-size: 3vh;
+                    margin: 0;
+                }
+            }
+
+            .card.overview.right{
+                top:55vw;
+                left: 60vw;
+                width:30vw;
+                height:30vw;
+                font-size: 3vh;
+                margin: 0;
+                animation: mid-to-right 1s;
+            }
+
+            @keyframes left-to-mid{
+                0%{
+                    top:55vw;
+                    left: 10vw;
+                    width:30vw;
+                    height:30vw;
+                    font-size: 3vh;
+                    margin: 0;
+                }
+                100%{
+                    top:50vw;
+                    left: 30vw;
+                    width:40vw;
+                    height:40vw;
+                    z-index: 10003;  
+                    font-size: 4vh;
+                    margin: 0;
+                }
+            }
         </style>
     </head>
-    <body>
-        <h1><span style="color:gray">Todo</span><span>List</span></h1>
+    <body style="margin-bottom: 7vh;">
+        <h1><span style="color:gray;margin-bottom: 0;">Todo</span><span>List</span></h1>
         <div>
         </div>
-
-        
 
         <div>
             <select name="State" id="state_filter" style="width:50%;font-size: 3vh;">
@@ -370,7 +489,7 @@
             
         </div>
 
-        <div class="card primary" id="add_btn_term">
+        <div class="card add" id="add_btn_term">
             <button class="add" id="add" style="width:100%;">
                 Add
             </button>
@@ -380,16 +499,21 @@
             <div style="font-weight: bold;">New Item</div>
             <div>
                 <div style="font-size: 2vh;padding-left: 15px;padding-bottom: 0;color:gray">Content:</div>
-                <div><input type="text" style="display: inline-flex;" class="expand" id="input"></div>
+                <div><input type="text" style="font-size:3vh;" class="expand" id="input"></div>
+                <div style="font-size: 2vh;padding-left: 15px;padding-bottom: 0;color:red;display: none;" class="invalid-input">invalid input!</div>
             </div>
             <div>
                 <div style="font-size: 2vh;padding-left: 15px;padding-bottom: 0;color:gray">Due:</div>
-                <div><input type="date" id="timebox"/></div>
+                <div><input type="date" id="timebox" class="timebox"/></div>
             </div>
             <div>
                 <button class="submmit">Submmit</button>
                 <button class="cancel">Cancel</button>
             </div>
+        </div>
+
+        <div style="display:none" id="overlay">
+            <div class="overlay" id="overlay_area"></div>
         </div>
 
         <div class="footer">
@@ -404,6 +528,188 @@
         }        
 
         var selected_finished = 0;
+
+        function GetAllCards(){
+            var card_list = document.querySelectorAll("div.card");
+            var cards_info = [];
+            card_list.forEach(function(n){
+                if(n.classList.contains("delete")
+                    ||n.classList.contains("primary")
+                    ||n.classList.contains("finish")){
+                        console.log("get");
+                    cards_info.push([n.childNodes[0].innerHTML,n.childNodes[3].innerHTML]);
+                }
+            });
+            return cards_info;
+        }
+
+        $("overlay_area").addEventListener("touchend",function(e){
+            $("overlay").style.display="none";
+        })
+
+        var card_index = 0;
+        var total_card_len = 0;
+        function InitialCardOverview(){
+            card_index = 0;
+            var card_info = GetAllCards();
+            var len = card_info.length;
+            total_card_len = len;
+            if(len==0){
+                return;
+            }
+            console.log("init");
+            console.log(card_info[len-1][0],card_info[len-1][1]);
+            var middiv = document.createElement("div");
+            var leftdiv = document.createElement("div");
+            var rightdiv = document.createElement("div");
+
+            var middivtitle = document.createElement("div");
+            var middivtime = document.createElement("div");
+            middivtime.classList.add("time-caption");
+            middivtitle.innerHTML=card_info[0][0];
+            middivtime.innerHTML=card_info[0][1];
+            middiv.appendChild(middivtitle);
+            middiv.appendChild(middivtime);
+            
+            console.log(card_info);
+
+            if(len>1){
+                var rightdivtitle = document.createElement("div");
+                var rightdivtime = document.createElement("div");
+                rightdivtime.classList.add("time-caption");
+                rightdivtime.style.fontSize = "2vh";
+                rightdivtitle.innerHTML=card_info[1][0];
+                rightdivtime.innerHTML=card_info[1][1];
+                rightdiv.appendChild(rightdivtitle);
+                rightdiv.appendChild(rightdivtime);
+            }
+            if(len>2) {
+                var leftdivtitle = document.createElement("div");
+                var leftdivtime = document.createElement("div");
+                leftdivtime.classList.add("time-caption");
+                leftdivtime.style.fontSize = "2vh";
+                leftdivtitle.innerHTML=card_info[len-1][0];
+                leftdivtime.innerHTML=card_info[len-1][1];
+                leftdiv.appendChild(leftdivtitle);
+                leftdiv.appendChild(leftdivtime);
+            }
+
+            middiv.classList.add("card");
+            middiv.classList.add("overview");
+            middiv.classList.add("mid");
+
+            leftdiv.classList.add("card");
+            leftdiv.classList.add("overview");
+            leftdiv.classList.add("left");
+
+            rightdiv.classList.add("card");
+            rightdiv.classList.add("overview");
+            rightdiv.classList.add("right");
+
+            var ex;
+            var ey;
+            middiv.addEventListener("touchstart",function(e){
+                ex=e.touches[0].pageX;
+                ey=e.touches[0].pageY;
+                e.preventDefault();
+            });
+
+            middiv.addEventListener("touchend",function(e){
+                var slide_x = e.changedTouches[0].pageX-ex;
+                var slide_y = e.changedTouches[0].pageY-ey;
+                if(Math.abs(slide_y)<Math.abs(slide_x)&&slide_x<0){
+                    card_index = (card_index+1)%len;
+                    console.log(card_index,len);
+                    SwitchTo(card_index);
+                }
+            });
+
+            $("overlay").appendChild(leftdiv);
+            $("overlay").appendChild(middiv);
+            $("overlay").appendChild(rightdiv);
+
+            $("overlay").style.display = "block";
+        }
+
+        function SwitchTo(t){
+            var card_info = GetAllCards();
+            var len = card_info.length;
+            total_card_len = len;
+            if(len==0){
+                return;
+            }
+
+            var middiv = document.createElement("div");
+            var leftdiv = document.createElement("div");
+            var rightdiv = document.createElement("div");
+
+            var middivtitle = document.createElement("div");
+            var middivtime = document.createElement("div");
+            middivtime.classList.add("time-caption");
+            middivtitle.innerHTML=card_info[t][0];
+            middivtime.innerHTML=card_info[t][1];
+            middiv.appendChild(middivtitle);
+            middiv.appendChild(middivtime);
+            
+            if(len>1){
+                var rightdivtitle = document.createElement("div");
+                var rightdivtime = document.createElement("div");
+                rightdivtime.classList.add("time-caption");
+                rightdivtime.style.fontSize = "2vh";
+                rightdivtitle.innerHTML=card_info[(t+1)%len][0];
+                rightdivtime.innerHTML=card_info[(t+1)%len][1];
+                rightdiv.appendChild(rightdivtitle);
+                rightdiv.appendChild(rightdivtime);
+            }
+            if(len>2) {
+                var leftdivtitle = document.createElement("div");
+                var leftdivtime = document.createElement("div");
+                leftdivtime.classList.add("time-caption");
+                leftdivtime.style.fontSize = "2vh";
+                leftdivtitle.innerHTML=card_info[t-1<0?len-1:t-1][0];
+                leftdivtime.innerHTML=card_info[t-1<0?len-1:t-1][1];
+                leftdiv.appendChild(leftdivtitle);
+                leftdiv.appendChild(leftdivtime);
+            }
+
+            middiv.classList.add("card");
+            middiv.classList.add("overview");
+            middiv.classList.add("mid");
+
+            leftdiv.classList.add("card");
+            leftdiv.classList.add("overview");
+            leftdiv.classList.add("left");
+
+            rightdiv.classList.add("card");
+            rightdiv.classList.add("overview");
+            rightdiv.classList.add("right");
+
+            var ex;
+            var ey;
+            middiv.addEventListener("touchstart",function(e){
+                ex=e.touches[0].pageX;
+                ey=e.touches[0].pageY;
+                e.preventDefault();
+            });
+
+            middiv.addEventListener("touchend",function(e){
+                var slide_x = e.changedTouches[0].pageX-ex;
+                var slide_y = e.changedTouches[0].pageY-ey;
+                if(Math.abs(slide_y)<Math.abs(slide_x)&&slide_x<0){
+                    card_index = (card_index+1)%len;
+                    console.log(card_index,len);
+                    SwitchTo(card_index);
+                }
+            });
+
+            $("overlay").removeChild($("overlay").lastChild);
+            $("overlay").removeChild($("overlay").lastChild);
+            $("overlay").removeChild($("overlay").lastChild);
+
+            $("overlay").appendChild(leftdiv);
+            $("overlay").appendChild(middiv);
+            $("overlay").appendChild(rightdiv);
+        }
 
         $("state_filter").addEventListener("change",function(e){
             console.log(e.target.value);
@@ -435,7 +741,9 @@
                     }
                 }else {
                     console.log("ALL");
-                    n.style.display="block";
+                    if(!n.classList.contains('additem')){
+                        n.style.display="block";
+                    }
                 }
                 
             })
@@ -449,7 +757,11 @@
                 if(v.checked){
                     var card_node = v.parentNode.parentNode;
                     if(all_finished==false){
-                        card_node.classList.remove("primary");
+                        if(card_node.classList.contains("delete")){
+                            card_node.classList.remove("delete");
+                        } else {
+                            card_node.classList.remove("primary");
+                        }
                         card_node.classList.add("finish");
                         card_node.firstChild.style.textDecoration = "line-through";
                     } else{
@@ -516,7 +828,9 @@
                 var temp = $("alerting_item").parentNode;
                 var alerted = $("alerting_item").value;
                 temp.removeChild(temp.lastChild);
-                temp.innerHTML = alerted;
+
+                var text_node = document.createTextNode(alerted);
+                temp.appendChild(text_node);
             }
         })
 
@@ -531,7 +845,6 @@
                     } else {
                         v.checked = true;
                     }
-                    
                 }
             })
         });
@@ -548,13 +861,46 @@
             return all_selected;
         }
 
-        function NewCard(){
+        window.onload=function(){ 
+            var card_listing = localStorage.getItem("todolist");
+            var listing = card_listing.split(",");
+            var t=0;
+            if(listing.length==1) return;
+            while(t<listing.length){
+                $('list').appendChild(NewCardOnload(listing[t],listing[t+1],listing[t+2],listing[t+3]));
+                t=t+4;
+            }
+        }
+
+        window.onbeforeunload = function () {
+            window.alert("leave");
+            localStorage.setItem("todolist", GetAllCardAndState());
+        };
+
+        function GetAllCardAndState(){
+            var card_list = document.querySelectorAll("div.card");
+            var cards_info = [];
+            card_list.forEach(function(n){
+                if(n.classList.contains("delete")){
+                    cards_info.push([n.childNodes[0].innerHTML,n.childNodes[2].innerHTML,n.childNodes[3].innerHTML,'delete']);
+                } else if(n.classList.contains("primary")){
+                    cards_info.push([n.childNodes[0].innerHTML,n.childNodes[2].innerHTML,n.childNodes[3].innerHTML,'primary']);
+                } else if(n.classList.contains("finish")){
+                    cards_info.push([n.childNodes[0].innerHTML,n.childNodes[2].innerHTML,n.childNodes[3].innerHTML,'finish']);
+                }
+            });
+            
+            return cards_info;
+        }
+
+        function NewCardOnload(card_title,start_time,due_time,class_name){
             var card = document.createElement("div");
             card.classList.add("card");
             
             var text = document.createElement("div");
             text.classList.add('card-text');
-            text.innerHTML = $("input").value;
+            var text_node = document.createTextNode(card_title);
+            text.appendChild(text_node);
             //text.style.display="inline-block";
 
             var checkboxdiv = document.createElement("div");
@@ -568,25 +914,134 @@
             checkbox.classList.add("opacity-change");
             checkboxdiv.appendChild(checkbox);
             
+            var starttimediv = document.createElement("div");
+            starttimediv.innerHTML = start_time;
+            starttimediv.classList.add('time-caption');
+            
             var timediv = document.createElement("div");
-            timediv.innerHTML = "<b>Due:</b>"+$("timebox").value;
+            timediv.innerHTML = due_time;
             timediv.classList.add('time-caption');
 
             card.appendChild(text);
             card.appendChild(checkboxdiv);
+            card.appendChild(starttimediv);
             card.appendChild(timediv);
-            
+
             var div = document.createElement("div");
             div.appendChild(card);
 
             card.addEventListener("animationend",function(e){
                 if(e.animationName=="buildcard"){
-                    card.classList.add("primary");
+                    card.classList.add(class_name);
                 }
             });
 
-            card.addEventListener("blur",function(e){
-                console.log("change");
+            var ex=0;
+            var ey=0;
+            card.addEventListener("touchstart",function(e){
+                ex=e.touches[0].pageX;
+                ey=e.touches[0].pageY;
+                if(e.target.classList.contains('checkbox')){
+                    console.log("check box");
+                    return;
+                }
+                e.preventDefault();
+            });
+
+            card.addEventListener("touchmove",function(e){
+                
+            });
+
+            card.addEventListener("touchend",function(e){
+                var slide_x = e.changedTouches[0].pageX-ex;
+                var slide_y = e.changedTouches[0].pageY-ey;
+                if(Math.abs(slide_y)<Math.abs(slide_x)&&slide_x<0){
+                    InitialCardOverview();
+                }
+            });
+
+            var long_touch = 0;
+            text.addEventListener('touchend',function(e){
+                if($("alerting_item")){
+                    console.log("alerting");
+                    return;
+                }
+                this.innerHTML = '<input id="alerting_item" value="'+this.innerHTML+'">';
+                e.preventDefault();
+            });
+
+            return div;
+        }
+
+        function NewCard(card_title,start_time,due_time){
+            var card = document.createElement("div");
+            card.classList.add("card");
+            
+            var text = document.createElement("div");
+            text.classList.add('card-text');
+            var text_node = document.createTextNode($("input").value);
+            text.appendChild(text_node);
+            //text.style.display="inline-block";
+
+            var checkboxdiv = document.createElement("div");
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.style.height="4vh";
+            checkbox.style.width="4vh";
+            checkbox.style.display="inline-block";
+            checkboxdiv.style.float = "right";
+            checkbox.classList.add("checkbox");
+            checkbox.classList.add("opacity-change");
+            checkboxdiv.appendChild(checkbox);
+            
+            var starttimediv = document.createElement("div");
+            starttimediv.innerHTML = "<b>Start:</b>"+start_time;
+            starttimediv.classList.add('time-caption');
+            
+            var timediv = document.createElement("div");
+            timediv.innerHTML = "<b>Due:</b>"+due_time;
+            timediv.classList.add('time-caption');
+
+            card.appendChild(text);
+            card.appendChild(checkboxdiv);
+            card.appendChild(starttimediv);
+            card.appendChild(timediv);
+
+            var div = document.createElement("div");
+            div.appendChild(card);
+
+            card.addEventListener("animationend",function(e){
+                if(e.animationName=="buildcard"){
+                    if(start_time>due_time){
+                        card.classList.add("delete");
+                    } else {
+                        card.classList.add("primary");
+                    }
+                }
+            });
+
+            var ex=0;
+            var ey=0;
+            card.addEventListener("touchstart",function(e){
+                ex=e.touches[0].pageX;
+                ey=e.touches[0].pageY;
+                if(e.target.classList.contains('checkbox')){
+                    console.log("check box");
+                    return;
+                }
+                e.preventDefault();
+            });
+
+            card.addEventListener("touchmove",function(e){
+                
+            });
+
+            card.addEventListener("touchend",function(e){
+                var slide_x = e.changedTouches[0].pageX-ex;
+                var slide_y = e.changedTouches[0].pageY-ey;
+                if(Math.abs(slide_y)<Math.abs(slide_x)&&slide_x<0){
+                    InitialCardOverview();
+                }
             });
 
             var long_touch = 0;
@@ -616,13 +1071,19 @@
         });
 
         document.querySelector("button.submmit").addEventListener("touchend",function(e){
-            $("list").insertBefore(NewCard(),$("list").firstChild);
+            if($("input").value.length<5){
+                document.querySelector("div.invalid-input").style.display="block";
+                return;
+            }
+            document.querySelector("div.invalid-input").style.display="none";
+            $("list").insertBefore(NewCard($("input").value,getTime(),$("timebox").value),$("list").firstChild);
             $("add_item_term").style.display="none";
             $("add_btn_term").style.display="block";
         });
 
         console.log(document.querySelector("button.cancel"));
         document.querySelector("button.cancel").addEventListener("touchend",function(e){
+            document.querySelector("div.invalid-input").style.display="none";
             document.querySelector("div.additem").style.display="none";
             $("add_btn_term").style.display="block";
         });
