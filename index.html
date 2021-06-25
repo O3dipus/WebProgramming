@@ -474,7 +474,9 @@
         <h1><span style="color:gray;margin-bottom: 0;">Todo</span><span>List</span></h1>
         <div>
         </div>
+        <div style="margin-left: 15px;font-size: 2vh;color:gray" id="skep">
 
+        </div>
         <div>
             <select name="State" id="state_filter" style="width:50%;font-size: 3vh;">
                 <option value="All" style="background-color: gainsboro;font-size: 2vh;">All</option>
@@ -528,6 +530,27 @@
         }        
 
         var selected_finished = 0;
+
+        RefreshSkep();
+        function RefreshSkep(){
+            
+            var card_all=GetAllCardAndState();
+            var finished=0;
+            var primary=0;
+            var deprecated=0;
+            card_all.forEach(function(v){
+                console.log(v[3]);
+                if(v[3]=="primary"){
+                    primary=primary+1;
+                } else if(v[3]=="delete"){
+                    deprecated=deprecated+1;
+                } else if(v[3]=="finish"){
+                    finished=finished+1;
+                }
+            });
+
+            $("skep").innerHTML = "ongoing:"+primary+",finished:"+finished+",deprecated:"+deprecated;
+        }
 
         function GetAllCards(){
             var card_list = document.querySelectorAll("div.card");
@@ -772,7 +795,8 @@
                     
                 }
                 v.checked=false;
-            })
+            });
+            RefreshSkep();
         });
 
         function AllFinished(checkbox_list){
@@ -807,6 +831,7 @@
                 }
                 v.checked=false;
             });
+            RefreshSkep();
         });
 
         function AllDelete(checkbox_list){
@@ -938,6 +963,7 @@
                 if(e.animationName=="buildcard"){
                     card.classList.add(class_name);
                 }
+                RefreshSkep();
             });
 
             var ex=0;
@@ -1021,6 +1047,7 @@
                     } else {
                         card.classList.add("primary");
                     }
+                    RefreshSkep();
                 }
             });
 
@@ -1071,7 +1098,6 @@
             console.log(getTime());
             $("timebox").value=getTime();
             $("input").value="";
-            
         });
 
         document.querySelector("button.submmit").addEventListener("touchend",function(e){
