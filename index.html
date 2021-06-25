@@ -1,0 +1,651 @@
+<html>
+    <head>
+        <style>
+            body{
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #74EBD5;
+                background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
+
+                padding: 2vw;
+                font-size: 4vh;
+            }
+
+            h1{
+                font-size: 6vh;
+            }
+
+            .card{
+                border-radius: 10px;
+                background-color: #0093E9;
+                border:solid black;
+                word-wrap: break-word;
+                padding: 15px;
+                box-shadow: gray 10px 10px;
+                margin: 15px;
+                display: block;
+                width:80%;
+
+                animation-name: buildcard;
+                animation-duration: 0.6s;
+                animation-timing-function: ease-in-out;
+            }
+
+            .card.primary{
+                background-size: 200% 100%;
+                background-position: 200% 0;
+                background-color: #0093E9;
+                background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+
+                animation-name: gradient-animation-primary;
+                animation-duration: 0.6s;
+                animation-timing-function: ease-in-out;
+            }
+
+            .inputbox{
+                background-color:linear-gradient(90deg, rgba(250, 252, 252,1) 20.5625%,rgba(248, 251, 251,1) 20.5625%,rgba(0, 234, 242,1) 80.5625%);
+            }
+
+            @keyframes gradient-animation-primary{
+                0% {
+                    background-position: 200% 0;
+                }
+                100% {
+                    background-position: 0 0;
+                }
+            }
+
+            .card.finish{
+                background-size: 200% 100%;
+                background-position: 200% 0;
+                background-color: #85FFBD;
+                background-image: linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%);
+                animation-name: gradient-animation-finish;
+                animation-duration: 0.6s;
+            }
+
+            @keyframes gradient-animation-finish{
+                0% {
+                    background-position: 200% 0;
+                }
+                100% {
+                    background-position: 0 0;
+                }
+            }
+
+            .card.delete{
+                background-size: 200% 100%;
+                background-position: 200% 0;
+                background-color: #FFE53B;
+                background-image: linear-gradient(147deg, #FFE53B 0%, #FF2525 74%);
+                animation-name: gradient-animation-delete;
+                animation-duration: 0.6s;
+            }
+
+
+            @keyframes gradient-animation-delete{
+                0% {
+                    background-position: 200% 0;
+                }
+                100% {
+                    background-position: 0 0;
+                }
+            }
+
+            
+            .card.additem{
+                background-size: 200% 100%;
+                background-position: 200% 0;
+                background-image: linear-gradient( 135deg, #92FFC0 10%, #002661 100%);
+                animation-name: gradient-animation-additem;
+                animation-duration: 0.6s;
+            }
+
+            @keyframes gradient-animation-additem{
+                0% {
+                    font-size: 0;
+                    background-position: 200% 0;
+                }
+                50%{
+                    font-size: 0;
+                    background-position: 100% 0;
+                }
+                100% {
+                    font-size: 4vh;
+                    background-position: 0 0;
+                }
+            }
+
+            .card.selected{
+                background-color: gray;
+            }
+
+            button{
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                border:1px solid black;
+                font-size: 3vh;
+                margin: 2px 0px 2px 15px;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: gray 10px 10px;
+                display: inline-block;
+            }
+
+            button.add{
+                border:none;
+                box-shadow: none;
+                background-color: rgba(0,0,0,0);
+            }
+
+            button.finish{
+                background-color: #74EBD5;
+                background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
+
+            }
+
+            button.tbc{
+                background-color: rgb(255, 117, 253);
+            }
+
+            button.alert{
+                background-color: #FFDEE9;
+                background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
+            }
+
+            button.delete{
+                background-color: #FFE53B;
+                background-image: linear-gradient(147deg, #FFE53B 0%, #FF2525 74%);
+
+            }
+
+            button.all{
+                background-color: #FF3CAC;
+                background-image: linear-gradient(225deg, #FF3CAC 0%, #784BA0 50%, #2B86C5 100%);
+
+            }
+
+            button.delete-check{
+                background-color: red;
+            }
+
+            button.hidden{
+                border:none;
+                background-color:white;
+                text-shadow: 2px 2px gray;
+            }
+
+            button.primary_hidden{
+                background-color: aquamarine;
+                border:none;
+                text-shadow: 2px 2px gray;
+            }
+
+            button.submmit{
+                background-image: linear-gradient( 135deg, #F0FF00 10%, #58CFFB 100%);
+            }
+
+            button.cancel{
+                background-image: linear-gradient( 135deg, #FF9D6C 10%, #BB4E75 100%);
+            }
+
+            button.primary_hidden:active{
+                background-color:rgb(17, 163, 115);
+            }
+
+            button.search{
+                border-radius: 10px;
+                box-shadow: gray 10px 10px;
+            }
+
+            .button_div{
+                transition:width 1s linear;
+            }
+
+            select{
+                padding:15px;
+                margin: 15px;
+                border-radius: 10px;
+            }
+
+            .time-caption{
+                color:gray;
+                font-size: 2vh;
+                text-shadow: 2px 2px gray;
+                margin: 15px;
+                padding: 15px;
+                text-decoration: none;
+                animation:font-size-change-0-2 1s;
+            }
+
+            .card-text{
+                user-select:none;  
+            }
+
+            @keyframes font-size-change-0-2{
+                from{
+                    font-size: 0;
+                }
+                to{
+                    font-size: 2vh;
+                }
+            }
+
+            input{
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-size: 4vh;
+                padding:15px;
+                margin: 15px;
+                border-radius: 10px;
+                box-shadow: gray 10px 10px;
+                border:1px solid black;
+                width: 75%;
+                padding: 5px;
+            }
+
+            input.expand{
+                animation-name:input-expand;
+                animation-duration: 0.6s;
+                animation-timing-function: linear;
+            }
+
+            @keyframes input-expand {
+                0%{
+                    font-size: 0;
+                    width:0;
+                }
+                50%{
+                    font-size: 0;
+                    width:37.5%;
+                }
+                100%{
+                    font-size: 4vh;
+                    width:75%;
+                }
+            }
+
+            .footer{
+                margin: 15px;
+                padding: 15px;
+                position: fixed;
+                left: 0;
+                bottom:0;
+                width: 100%;
+                z-index:100;
+            }
+
+            .checkbox{
+            }
+
+            .opacity-change{
+                animation: from-transparent-to-solid 1s;
+            }
+
+            .font-expand{
+                animation: font-size-change 1s;
+                float: left;
+            }
+
+            .input-text-expand{
+                animation: input-expand 2s linear;
+                width:40%;
+            }
+
+            .alert-button-expand{
+                animation:button-expand 2s linear;
+                float:inline-end;
+            }
+
+            @keyframes from-transparent-to-solid{
+                0%{
+                    opacity: 0;
+                }
+                50%{
+                    opacity: 0;
+                }
+                100%{
+                    opacity: 1;
+                }
+            }
+
+            @keyframes buildcard{
+                from{
+                    font-size: 0vh;
+                    width:10%;
+                }
+
+                to{
+                    font-size: 4vh;
+                    width:80%;
+                }
+            }
+
+            @keyframes font-size-change{
+                from{
+                    font-size: 0;
+                }
+                to{
+                    font-size: 4vh;
+                }
+            }
+
+            @keyframes input-expand{
+                0%{
+                    width:0;
+                }
+                50%{
+                    width:0;
+                }
+                100%{
+                    width:40%;
+                }
+            }
+
+            @keyframes button-expand{
+                0%{
+                    opacity: 0;
+                }
+                100%{
+                    opacity: 1;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <h1><span style="color:gray">Todo</span><span>List</span></h1>
+        <div>
+        </div>
+
+        
+
+        <div>
+            <select name="State" id="state_filter" style="width:50%;font-size: 3vh;">
+                <option value="All" style="background-color: gainsboro;font-size: 2vh;">All</option>
+                <option value="Finished" style="background-color: greenyellow;font-size: 2vh;">Finished</option>
+                <option value="Ongoing" style="background-color: aquamarine;font-size: 2vh;">Ongoing</option>
+                <option value="Delete" style="background-color: #FF2525;font-size: 2vh;">Delete</option>
+            </select>
+        </div>
+        
+        
+        <div id="list">
+            
+        </div>
+
+        <div class="card primary" id="add_btn_term">
+            <button class="add" id="add" style="width:100%;">
+                Add
+            </button>
+        </div>
+
+        <div class="card additem" style="display: none;" id="add_item_term">
+            <div style="font-weight: bold;">New Item</div>
+            <div>
+                <div style="font-size: 2vh;padding-left: 15px;padding-bottom: 0;color:gray">Content:</div>
+                <div><input type="text" style="display: inline-flex;" class="expand" id="input"></div>
+            </div>
+            <div>
+                <div style="font-size: 2vh;padding-left: 15px;padding-bottom: 0;color:gray">Due:</div>
+                <div><input type="date" id="timebox"/></div>
+            </div>
+            <div>
+                <button class="submmit">Submmit</button>
+                <button class="cancel">Cancel</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button class="finish" id="finish_btn">Finish</button>
+            <button class="delete" id="delete_btn">Delete</button>
+            <button class="all" id="all_btn">All</button>
+        </div>
+    </body>
+    <script>
+        function $(id){
+            return document.getElementById(id);
+        }        
+
+        var selected_finished = 0;
+
+        $("state_filter").addEventListener("change",function(e){
+            console.log(e.target.value);
+            var child_nodes = $("list").childNodes;
+            var card_list = document.querySelectorAll("div.card");
+            console.log(card_list);
+            card_list.forEach(function(n){
+                console.log(n.childNodes[1]);
+                if(e.target.value=="Finished"){
+                    if(n.classList.contains("finish")){
+                        n.style.display="block";
+                    } else {
+                        n.style.display="none";
+                        n.childNodes[1].firstChild.checked=false;
+                    }
+                }   else if(e.target.value=="Ongoing"){
+                    if(n.classList.contains("primary")){
+                        n.style.display="block";
+                    } else {
+                        n.style.display="none";
+                        n.childNodes[1].firstChild.checked=false;
+                    }
+                }  else if(e.target.value=="Delete"){
+                    if(n.classList.contains("delete")){
+                        n.style.display="block";
+                    } else {
+                        n.style.display="none";
+                        n.childNodes[1].firstChild.checked=false;
+                    }
+                }else {
+                    console.log("ALL");
+                    n.style.display="block";
+                }
+                
+            })
+        })
+
+        $("finish_btn").addEventListener("touchend",function(e){
+            var checkbox_list = document.querySelectorAll("input.checkbox");
+            var all_finished = AllFinished(checkbox_list);
+            console.log(all_finished);
+            checkbox_list.forEach(function(v){
+                if(v.checked){
+                    var card_node = v.parentNode.parentNode;
+                    if(all_finished==false){
+                        card_node.classList.remove("primary");
+                        card_node.classList.add("finish");
+                        card_node.firstChild.style.textDecoration = "line-through";
+                    } else{
+                        card_node.classList.add("primary");
+                        card_node.classList.remove("finish");
+                        card_node.firstChild.style.textDecoration = "none";
+                    }
+                    
+                }
+                v.checked=false;
+            })
+        });
+
+        function AllFinished(checkbox_list){
+            var all_finished = true;
+            checkbox_list.forEach(function(v){
+                if(v.checked){
+                    var card_node = v.parentNode.parentNode;
+                    console.log(card_node.classList.contains("finish")==false);
+                    if(card_node.classList.contains("finish")==false){
+                        console.log("return false");
+                        all_finished = false;
+                    }
+                }
+            });
+            return all_finished;
+        }
+
+        $("delete_btn").addEventListener("touchend",function(e){
+            var checkbox_list = document.querySelectorAll("input.checkbox");
+            var all_delete = AllDelete(checkbox_list);
+            checkbox_list.forEach(function(v){
+                if(v.checked){
+                    var card_node = v.parentNode.parentNode;
+                    var root_node = card_node.parentNode;
+
+                    if(card_node.classList.contains("primary")){
+                        card_node.classList.remove("primary");
+                        card_node.classList.add("delete");
+                    } else {
+                        $('list').removeChild(root_node);
+                    }
+                }
+                v.checked=false;
+            });
+        });
+
+        function AllDelete(checkbox_list){
+            var all_delete = true;
+            checkbox_list.forEach(function(v){
+                if(v.checked){
+                    var card_node = v.parentNode.parentNode;
+                    if(card_node.classList.contains("delete")==false){
+                        all_delete = false;
+                    }
+                }
+            });
+            return all_delete;
+        }
+
+        document.addEventListener("touchstart",function(e){
+            console.log(e.target);
+            if($("alerting_item")&&e.target.id!="alerting_item"){
+                var temp = $("alerting_item").parentNode;
+                var alerted = $("alerting_item").value;
+                temp.removeChild(temp.lastChild);
+                temp.innerHTML = alerted;
+            }
+        })
+
+        $("all_btn").addEventListener("touchend",function(e){
+            var checkbox_list = document.querySelectorAll("input.checkbox");
+            var all_selected = AllSelected(checkbox_list);
+            checkbox_list.forEach(function(v){
+                console.log(v.style.display);
+                if(v.parentNode.parentNode.style.display!="none"){
+                    if(all_selected){
+                        v.checked = false;
+                    } else {
+                        v.checked = true;
+                    }
+                    
+                }
+            })
+        });
+
+        function AllSelected(checkbox_list){
+            var all_selected = true;
+            checkbox_list.forEach(function(v){
+                if(v.parentNode.parentNode.style.display!="none"){
+                    if(!v.checked){
+                        all_selected = false;
+                    }
+                }
+            });
+            return all_selected;
+        }
+
+        function NewCard(){
+            var card = document.createElement("div");
+            card.classList.add("card");
+            
+            var text = document.createElement("div");
+            text.classList.add('card-text');
+            text.innerHTML = $("input").value;
+            //text.style.display="inline-block";
+
+            var checkboxdiv = document.createElement("div");
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.style.height="4vh";
+            checkbox.style.width="4vh";
+            checkbox.style.display="inline-block";
+            checkboxdiv.style.float = "right";
+            checkbox.classList.add("checkbox");
+            checkbox.classList.add("opacity-change");
+            checkboxdiv.appendChild(checkbox);
+            
+            var timediv = document.createElement("div");
+            timediv.innerHTML = "<b>Due:</b>"+$("timebox").value;
+            timediv.classList.add('time-caption');
+
+            card.appendChild(text);
+            card.appendChild(checkboxdiv);
+            card.appendChild(timediv);
+            
+            var div = document.createElement("div");
+            div.appendChild(card);
+
+            card.addEventListener("animationend",function(e){
+                if(e.animationName=="buildcard"){
+                    card.classList.add("primary");
+                }
+            });
+
+            card.addEventListener("blur",function(e){
+                console.log("change");
+            });
+
+            var long_touch = 0;
+            text.addEventListener('touchend',function(e){
+                if($("alerting_item")){
+                    console.log("alerting");
+                    return;
+                }
+                this.innerHTML = '<input id="alerting_item" value="'+this.innerHTML+'">';
+                e.preventDefault();
+            });
+
+            return div;
+        }
+
+        $("add").addEventListener('touchstart',function(e){
+            if($("add_item_term").style.display=="block"){
+                $("add_item_term").style.display="none";
+                return;
+            }
+            $("add_btn_term").style.display="none";
+            $("add_item_term").style.display="block";
+            console.log(getTime());
+            $("timebox").value=getTime();
+            $("input").value="";
+            
+        });
+
+        document.querySelector("button.submmit").addEventListener("touchend",function(e){
+            $("list").insertBefore(NewCard(),$("list").firstChild);
+            $("add_item_term").style.display="none";
+            $("add_btn_term").style.display="block";
+        });
+
+        console.log(document.querySelector("button.cancel"));
+        document.querySelector("button.cancel").addEventListener("touchend",function(e){
+            document.querySelector("div.additem").style.display="none";
+            $("add_btn_term").style.display="block";
+        });
+
+        function getTime(){
+            var d = new Date();
+            var year = d.getFullYear();
+            var month = d.getMonth()+1;
+            var date = d.getDate();
+            var time="";
+            if(month<10){
+                if(date<10){
+                    time = year+"-0"+month+"-0"+date;
+                } else {
+                    time = year+"-0"+month+"-"+date;
+                }
+            } else if(date<10){
+                time = year+"-"+month+"-0"+date;
+            } else {
+                time = year+"-"+month+"-"+date;
+            }
+            
+            return time;
+        }
+    </script>
+</html>
