@@ -901,6 +901,9 @@
             var text = document.createElement("div");
             text.classList.add('card-text');
             var text_node = document.createTextNode(card_title);
+            if(class_name=="finish"){
+                text.style.textDecoration="line-through";
+            }
             text.appendChild(text_node);
             //text.style.display="inline-block";
 
