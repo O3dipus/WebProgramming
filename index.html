@@ -1056,7 +1056,7 @@
             card.addEventListener("touchstart",function(e){
                 ex=e.touches[0].pageX;
                 ey=e.touches[0].pageY;
-                if(e.target.classList.contains('checkbox')){
+                if(e.target.classList.contains('checkbox')||e.target.id=="alerting_item"){
                     console.log("check box");
                     return;
                 }
